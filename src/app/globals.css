@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .prose-defaults {
+    @apply prose prose-stone lg:prose-xl dark:prose-invert;
+  }
+}

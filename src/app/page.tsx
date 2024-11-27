@@ -1,42 +1,55 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query"
-import { RecentPost } from "./components/post"
-import { client } from "./lib/client"
+import { features } from "@/data/constants"
+import { FaCheck } from "react-icons/fa"
+import { MaxWidthWrapper } from "./components/max-width-wrapper"
+import { Heading } from "./components/typography/heading"
+import FancyButton from "./components/common/fancy-button"
 
-export default async function Home() {
-  const res = await client.post.recent.$get()
-  const recentPost = await res.json()
-
-  /**
-   * This is the intended way to prefetch data on the server to have it immediately available in the client.
-   * But: you could also just pass the post as a prop instead of using the `HydrationBoundary`
-   */
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery({
-    queryFn: () => recentPost,
-    queryKey: ["get-recent-post"],
-  })
-
+const Page = () => {
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-medium font-heading tracking-tight sm:text-[5rem]">
-            <span className="text-brand-700">j</span>stack
-          </h1>
-
-          <p className="text-center max-w-prose text-balance">
-            The modern way to confidently ship high-performance, low-cost
-            Next.js apps. End-to-end typesafe with an incredible DX.
-          </p>
-
-          <RecentPost />
-        </div>
-      </main>
-    </HydrationBoundary>
+    <>
+      <section className="relative py-24 sm:py-32">
+        <MaxWidthWrapper className="text-center">
+          <div className="relative mx-auto flex flex-col items-center gap-10 text-center">
+            <div className="prose-defaults">
+              <Heading level="h1">
+                <span>Real-Time SaaS Insights,</span>
+                <br />
+                <span className="relative bg-gradient-to-r from-brand-700 to-brand-800 bg-clip-text text-transparent dark:from-brand-400 dark:to-brand-600">
+                  Delivered to Your Discord
+                </span>
+              </Heading>
+              <p className="leading-7 text-gray-600 dark:text-gray-300">
+                PingPanda is the easiest way to manage your SaaS. Get instant
+                notifications for&nbsp;
+                <span className="font-semibold text-gray-700 dark:text-gray-200">
+                  sales, new users, or any other ovents
+                </span>
+                &nbsp;sent diretly to your Discord.
+              </p>
+            </div>
+            <ul className="prose-defaults list-none space-y-2 text-start leading-7 text-gray-600 dark:text-gray-200">
+              {features.map((item, index) => (
+                <li key={index}>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-none text-brand-700 dark:text-brand-500">
+                      <FaCheck />
+                    </div>
+                    {item}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="w-full max-w-80">
+              <FancyButton to="#">Button</FancyButton>
+            </div>
+          </div>
+        </MaxWidthWrapper>
+      </section>
+      <section></section>
+      <section></section>
+      <section></section>
+    </>
   )
 }
+
+export default Page
