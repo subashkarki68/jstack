@@ -1,8 +1,8 @@
 import { features } from "@/data/constants"
 import { FaCheck } from "react-icons/fa"
-import { MaxWidthWrapper } from "./components/max-width-wrapper"
-import { Heading } from "./components/typography/heading"
-import FancyButton from "./components/common/fancy-button"
+import { MaxWidthWrapper } from "@/components/max-width-wrapper"
+import { Heading } from "@/components/typography/heading"
+import FancyButton from "@/components/common/fancy-button"
 
 const Page = () => {
   return (
@@ -40,7 +40,7 @@ const Page = () => {
               ))}
             </ul>
             <div className="w-full max-w-80">
-              <FancyButton to="#">Button</FancyButton>
+              <FancyButton to="/sign-up">Button</FancyButton>
             </div>
           </div>
         </MaxWidthWrapper>

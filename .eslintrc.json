@@ -2,9 +2,12 @@
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
     "prettier"
   ],
-  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error"
   }

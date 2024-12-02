@@ -18,7 +18,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@typography/*": ["./src/components/typography/*"],
+      "@common/*": ["./src/components/common/*"],
+      "@ui/*": ["./src/components/ui/*"],
     }
   },
   "include": [
