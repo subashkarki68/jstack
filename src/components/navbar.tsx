@@ -1,10 +1,11 @@
 import { cn } from "@/lib/utils"
-import { FC, HTMLAttributes } from "react"
+import { SignOutButton } from "@clerk/nextjs"
 import { MaxWidthWrapper } from "@components/max-width-wrapper"
-import Link from "next/link"
-import { SignInButton, SignOutButton } from "@clerk/nextjs"
 import { Button, buttonVariants } from "@ui/button"
+import Link from "next/link"
+import { FC, HTMLAttributes } from "react"
 import { FaArrowRight } from "react-icons/fa"
+import DarkModeToggle from "./darkmode-toggler"
 
 interface NavbarProps extends HTMLAttributes<HTMLElement> {
   className?: string
@@ -26,6 +27,9 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
             Ping<span className="text-brand-500">Panda</span>
           </Link>
           <div className="flex h-full items-center space-x-4">
+            <div className="hidden sm:block">
+              <DarkModeToggle />
+            </div>
             {user ? (
               <>
                 <SignOutButton>
