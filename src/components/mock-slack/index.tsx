@@ -1,8 +1,12 @@
 "use client"
 
-import { MenuItems, SideMenu } from "@/interfaces/Menus.interface"
+import {
+  MenuItems,
+  SideMenu,
+  UserItemsTypes,
+} from "@/components/mock-slack/menu.types"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BsChatRightText, BsHeadphones } from "react-icons/bs"
 import {
   FaAngleDown,
@@ -13,12 +17,15 @@ import {
   FaHome,
   FaPlus,
   FaRegEdit,
-  FaSms
+  FaSms,
 } from "react-icons/fa"
 import { HiBars3BottomLeft } from "react-icons/hi2"
 import { IoApps, IoFilterSharp } from "react-icons/io5"
 import { TbSend2 } from "react-icons/tb"
 import { Icon } from "../icons"
+import { appList, channelList, directMessageList } from "./mock-api"
+import { set } from "zod"
+import { IconBase, IconType } from "react-icons/lib"
 
 const MockSlack = () => {
   const items: MenuItems = {
@@ -68,17 +75,17 @@ const MockSlack = () => {
     },
     userItems: {
       channel: {
-        key: "channel",
+        key: UserItemsTypes.CHANNEL,
         label: "Channels",
         icon: FaHashtag,
       },
       directMessages: {
-        key: "directMessages",
+        key: UserItemsTypes.DM,
         label: "Direct Messages",
         icon: FaSms,
       },
       apps: {
-        key: "apps",
+        key: UserItemsTypes.APP,
         label: "Apps",
         icon: IoApps,
       },
@@ -87,6 +94,73 @@ const MockSlack = () => {
   const [activeItem, setActiveItem] = useState<
     (typeof items)[keyof typeof items]
   >(items.home)
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([
+    UserItemsTypes.CHANNEL,
+    UserItemsTypes.APP,
+  ])
+
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms))
+
+  const [fetchedChannelList, setFetchedChannelList] = useState<any>([])
+  const [fetchedDmList, setFetchedDmList] = useState<any>([])
+  const [fetchedAppList, setFetchedAppList] = useState<any>([])
+
+  useEffect(() => {
+    const fetchChannelList = async () => {
+      await delay(1000)
+      setFetchedChannelList(channelList)
+    }
+
+    const fetchDmList = async () => {
+      await delay(3000)
+      setFetchedDmList(directMessageList)
+    }
+
+    const fetchAppList = async () => {
+      await delay(2000)
+      setFetchedAppList(appList)
+    }
+    fetchChannelList()
+    fetchDmList()
+    fetchAppList()
+  }, [])
+
+  const generateUserMenuItems = (type: UserItemsTypes, Icon?: IconType) => {
+    switch (type) {
+      case UserItemsTypes.CHANNEL:
+        return fetchedChannelList.map((item: any) => (
+          <div
+            key={item?.id}
+            className="flex cursor-pointer items-center gap-2 px-4 py-1 rounded-lg hover:bg-slack-overlay-secondary"
+          >
+            {Icon && <Icon />}
+            {item?.name}
+          </div>
+        ))
+      case UserItemsTypes.DM:
+        return fetchedDmList.map((item: any) => (
+          <div
+            key={item?.id}
+            className="flex cursor-pointer items-center gap-2 px-4 py-1 rounded-lg hover:bg-slack-overlay-secondary"
+          >
+            {Icon && <Icon />}
+            {item?.id}
+          </div>
+        ))
+      case UserItemsTypes.APP:
+        return fetchedAppList.map((item: any) => (
+          <div
+            key={item?.id}
+            className="flex cursor-pointer items-center gap-2 px-4 py-1 rounded-lg hover:bg-slack-overlay-secondary"
+          >
+            <Image src={item?.icon} width={20} height={20} alt={item?.name} />
+            {item?.name}
+          </div>
+        ))
+    }
+  }
+
   return (
     <>
       <div className="flex max-h-[1200px] min-h-[800px] w-full overflow-hidden rounded-lg bg-gray-50 shadow-xl dark:bg-gray-900">
@@ -176,15 +250,36 @@ const MockSlack = () => {
                 return (
                   <div
                     key={item.key}
-                    className="group flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 hover:bg-slack-overlay-secondary"
+                    className="group flex cursor-pointer items-center gap-2"
+                    onClick={() => {
+                      if (expandedMenus.includes(item.key)) {
+                        setExpandedMenus(
+                          expandedMenus.filter((key) => key !== item.key)
+                        )
+                      } else {
+                        setExpandedMenus([...expandedMenus, item.key])
+                      }
+                    }}
                   >
-                    <div className="flex items-center gap-4">
-                      <item.icon className="shrink-0 grow-0 text-white" />
-                      <span className="line-clamp-1">{item.label}</span>
-                      <span className="hidden group-hover:flex">
-                        <FaAngleDown />
-                        <FaAngleUp />
-                      </span>
+                    <div className="flex w-full flex-col">
+                      <div className="flex w-full items-center gap-4 rounded-lg px-2 py-1 hover:bg-slack-overlay-secondary">
+                        {/* <item.icon className="shrink-0 grow-0 text-white" /> */}
+                        <span className="line-clamp-1">{item.label}</span>
+                        <div className="hidden group-hover:flex">
+                          {expandedMenus.includes(item.key) ? (
+                            <FaAngleUp />
+                          ) : (
+                            <FaAngleDown />
+                          )}
+                        </div>
+                      </div>
+                      <div className="mb-4 p-2 py-1">
+                        {expandedMenus.includes(item.key) && (
+                          <div className="mt-2 flex flex-col gap-2">
+                            {generateUserMenuItems(item.key, item.icon)}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )

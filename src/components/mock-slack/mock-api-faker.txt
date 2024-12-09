@@ -1,0 +1,25 @@
+import { faker } from '@faker-js/faker';
+
+const channelList = Array.from({ length: 10 }, () => ({
+  id: faker.datatype.uuid(),
+  name: faker.lorem.word(),
+  type: faker.random.arrayElement(['public', 'private']),
+  description: faker.lorem.sentence(),
+  members: Array.from({ length: 3 }, () => faker.internet.userName()),
+}));
+
+const directMessageList = Array.from({ length: 10 }, () => ({
+  id: faker.datatype.uuid(),
+  userIds: Array.from({ length: 2 }, () => faker.internet.userName()),
+  lastMessage: {
+    text: faker.lorem.sentence(),
+    timestamp: faker.date.recent(),
+  },
+}));
+
+const appList = Array.from({ length: 10 }, () => ({
+  id: faker.datatype.uuid(),
+  name: faker.company.companyName(),
+  description: faker.lorem.sentence(),
+  icon: faker.image.imageUrl(),
+}));
